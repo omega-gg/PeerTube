@@ -74,7 +74,7 @@ function getVbmlValue(text: string, key: string)
 
   if (indexB == -1) return "";
 
-  return text.substring(indexA, indexB ).trim();
+  return text.substring(indexA, indexB).trim();
 }
 
 //-------------------------------------------------------------------------------------------------
