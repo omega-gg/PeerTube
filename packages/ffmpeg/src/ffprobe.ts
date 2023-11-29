@@ -1,6 +1,16 @@
-import ffmpeg, { FfprobeData } from 'fluent-ffmpeg'
+import { FfprobeData } from 'fluent-ffmpeg' // VBML
 import { forceNumber } from '@peertube/peertube-core-utils'
 import { VideoResolution } from '@peertube/peertube-models'
+
+//-------------------------------------------------------------------------------------------------
+// VBML
+
+function ffprobe(file: string, options: string[], callback: (err: any, data: FfprobeData) => void)
+{
+  callback("", <FfprobeData>{})
+}
+
+//-------------------------------------------------------------------------------------------------
 
 /**
  *
@@ -10,7 +20,8 @@ import { VideoResolution } from '@peertube/peertube-models'
 
 function ffprobePromise (path: string) {
   return new Promise<FfprobeData>((res, rej) => {
-    ffmpeg.ffprobe(path, [ '-show_chapters' ], (err, data) => {
+    // VBML
+    ffprobe(path, [ '-show_chapters' ], (err, data) => {
       if (err) return rej(err)
 
       return res(data)
@@ -22,20 +33,14 @@ function ffprobePromise (path: string) {
 // Audio
 // ---------------------------------------------------------------------------
 
-const imageCodecs = new Set([
-  'ansi', 'apng', 'bintext', 'bmp', 'brender_pix', 'dpx', 'exr', 'fits', 'gem', 'gif', 'jpeg2000', 'jpgls', 'mjpeg', 'mjpegb', 'msp2',
-  'pam', 'pbm', 'pcx', 'pfm', 'pgm', 'pgmyuv', 'pgx', 'photocd', 'pictor', 'png', 'ppm', 'psd', 'sgi', 'sunrast', 'svg', 'targa', 'tiff',
-  'txd', 'webp', 'xbin', 'xbm', 'xface', 'xpm', 'xwd'
-])
+//-------------------------------------------------------------------------------------------------
+// VBML
 
 async function isAudioFile (path: string, existingProbe?: FfprobeData) {
-  const videoStream = await getVideoStream(path, existingProbe)
-  if (!videoStream) return true
-
-  if (imageCodecs.has(videoStream.codec_name)) return true
-
-  return false
+  return true;
 }
+
+//-------------------------------------------------------------------------------------------------
 
 async function hasAudioStream (path: string, existingProbe?: FfprobeData) {
   const { audioStream } = await getAudioStream(path, existingProbe)
@@ -163,9 +168,7 @@ async function getVideoStreamBitrate (path: string, existingProbe?: FfprobeData)
 }
 
 async function getVideoStreamDuration (path: string, existingProbe?: FfprobeData) {
-  const metadata = existingProbe || await ffprobePromise(path)
-
-  return Math.round(metadata.format.duration)
+  return 0; // VBML
 }
 
 async function getVideoStream (path: string, existingProbe?: FfprobeData) {

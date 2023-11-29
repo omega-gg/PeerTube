@@ -58,6 +58,27 @@ function getUUIDFromFilename (filename: string) {
   return result[0]
 }
 
+//-------------------------------------------------------------------------------------------------
+// VBML
+//-------------------------------------------------------------------------------------------------
+
+function getVbmlValue(text: string, key: string)
+{
+  let indexA = text.indexOf(key + ": ");
+
+  if (indexA == -1) return "";
+
+  indexA += key.length + 2;
+
+  var indexB = text.indexOf('\n', indexA);
+
+  if (indexB == -1) return "";
+
+  return text.substring(indexA, indexB ).trim();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 // ---------------------------------------------------------------------------
 
 export {
@@ -66,5 +87,6 @@ export {
   getFormattedObjects,
   getSecureTorrentName,
   generateVideoImportTmpPath,
-  getUUIDFromFilename
+  getUUIDFromFilename,
+  getVbmlValue // VBML
 }

@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { ThumbnailType, ThumbnailType_Type } from '@peertube/peertube-models'
-import { generateImageFilename } from '../helpers/image-utils.js'
+import { generateImageFilename, getVbmlValue } from '../helpers/image-utils.js' // VBML
 import { CONFIG } from '../initializers/config.js'
 import { ASSETS_PATH, PREVIEWS_SIZE, THUMBNAILS_SIZE } from '../initializers/constants.js'
 import { ThumbnailModel } from '../models/video/thumbnail.js'
@@ -14,6 +14,7 @@ import { logger, loggerTagsFactory } from '@server/helpers/logger.js'
 import { remove } from 'fs-extra'
 import { FfprobeData } from 'fluent-ffmpeg'
 import Bluebird from 'bluebird'
+import { readFileSync } from 'fs' // VBML
 
 const lTags = loggerTagsFactory('thumbnail')
 
@@ -115,9 +116,23 @@ function generateLocalVideoMiniature (options: {
         return -1
       })
 
+    //---------------------------------------------------------------------------------------------
+    // VBML
+
+    let cover = getVbmlValue(readFileSync(input).toString('utf-8'), "cover");
+
+    if (cover == "") cover = ASSETS_PATH.DEFAULT_AUDIO_BACKGROUND;
+
     let biggestImagePath: string
     return Bluebird.mapSeries(metadatas, metadata => {
-      const { filename, basePath, height, width, existingThumbnail, outputPath, type } = metadata
+      const { filename, basePath, height, width, existingThumbnail, outputPath, type, cover } = metadata
+
+      if (videoFile.isAudio())
+      {
+        return updateLocalVideoMiniatureFromUrl({downloadUrl: cover, video, type});
+      }
+
+      //-------------------------------------------------------------------------------------------
 
       let thumbnailCreator: () => Promise<any>
 
@@ -144,6 +159,9 @@ function generateLocalVideoMiniature (options: {
           ffprobe
         })
       }
+
+    //---------------------------------------------------------------------------------------------
+
 
       if (!biggestImagePath) biggestImagePath = outputPath
 

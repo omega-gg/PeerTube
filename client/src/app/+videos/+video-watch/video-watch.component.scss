@@ -81,6 +81,89 @@ $video-max-height: calc(100vh - #{$header-height} - #{$theater-bottom-space});
   }
 }
 
+//-------------------------------------------------------------------------------------------------
+// VBML
+//-------------------------------------------------------------------------------------------------
+
+#video-wrapper
+{
+  // NOTE: Required for the cover scaling effect.
+  overflow: hidden;
+}
+
+.vjs-poster
+{
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.video-js-icon
+{
+  position: absolute;
+
+  width        : 96px;
+  height       : 96px;
+  line-height  : 96px;
+  border-radius: 96px;
+
+  left  : 0px;
+  right : 0px;
+  top   : 0px;
+  bottom: 0px;
+
+  margin: auto;
+
+  text-align: center;
+
+  opacity: 0.8;
+
+  background-color: #323232;
+
+  transition: opacity 0.2s;
+
+  my-global-icon
+  {
+    width: 64px;
+
+    // NOTE: We shift the play button to the right.
+    margin-left: 6px;
+  }
+}
+
+.video-wrapper-link
+{
+  &:hover .vjs-poster
+  {
+    transform: scale(1.1);
+
+    opacity: 0.8;
+  }
+
+  &:hover .video-js-icon
+  {
+    opacity: 1.0;
+  }
+}
+
+@media screen and (max-width: 600px)
+{
+  .video-js-icon
+  {
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+
+    my-global-icon
+    {
+      width: 40px;
+
+      // NOTE: We shift the play button to the right.
+      margin-left: 4px;
+    }
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 .remote-server-down {
   color: #fff;
   display: flex;

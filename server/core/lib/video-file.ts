@@ -23,7 +23,7 @@ async function buildNewFile (options: {
   const videoFile = new VideoFileModel({
     extname: getLowercaseExtension(path),
     size,
-    metadata: await buildFileMetadata(path, probe)
+    metadata: null // VBML
   })
 
   if (await isAudioFile(path, probe)) {

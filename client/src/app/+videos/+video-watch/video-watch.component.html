@@ -1,25 +1,35 @@
 <div class="root" [ngClass]="{ 'theater-enabled': theaterEnabled }">
   <!-- We need the video container for videojs so we just hide it -->
-  <div id="video-wrapper">
-    <div *ngIf="remoteServerDown" class="remote-server-down">
-      Sorry, but this video is not available because the remote instance is not responding.
-      <br />
-      Please try again later.
+  <!---------------------------------------------------------------------------------------------->
+  <!-- VBML -->
+  <a class="video-wrapper-link" href='vbml://vox.omega.gg/w/{{ video.shortUUID }}'>
+    <div id="video-wrapper">
+      <div *ngIf="remoteServerDown" class="remote-server-down">
+        Sorry, but this video is not available because the remote instance is not responding.
+        <br />
+        Please try again later.
+      </div>
+
+      <div id="videojs-wrapper">
+        <div class="video-js">
+          <div class="vjs-poster" style='background-image: url("{{ video.previewPath }}")'></div>
+          <div class="video-js-icon"><my-global-icon iconName="play"></my-global-icon></div>
+        </div>
+      </div>
+
+      <my-video-watch-playlist
+        #videoWatchPlaylist [playlist]="playlist"
+        (noVideoFound)="onPlaylistNoVideoFound()" (videoFound)="onPlaylistVideoFound($event)"
+      ></my-video-watch-playlist>
+
+      <my-plugin-placeholder pluginId="player-next"></my-plugin-placeholder>
     </div>
-
-    <div id="videojs-wrapper">
-      <video #playerElement class="video-js vjs-peertube-skin" playsinline="true"></video>
-    </div>
-
-    <my-video-watch-playlist
-      #videoWatchPlaylist [playlist]="playlist"
-      (noVideoFound)="onPlaylistNoVideoFound()" (videoFound)="onPlaylistVideoFound($event)"
-    ></my-video-watch-playlist>
-
-    <my-plugin-placeholder pluginId="player-next"></my-plugin-placeholder>
-  </div>
+  </a>
+  <!---------------------------------------------------------------------------------------------->
 
   <my-video-alert [video]="video" [user]="user" [noPlaylistVideoFound]="noPlaylistVideoFound"></my-video-alert>
+
+  <div class="alert alert-warning">This is a VBML track, you need a Semantic Player like <a href="https://omega.gg/MotionMonkey">MotionMonkey</a> to view its content.</div>
 
   <!-- Video information -->
   <div *ngIf="video" class="margin-content video-bottom">

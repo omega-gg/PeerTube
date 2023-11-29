@@ -399,7 +399,8 @@ const CONSTRAINTS_FIELDS = {
     VIEWS: { min: 0 },
     LIKES: { min: 0 },
     DISLIKES: { min: 0 },
-    FILE_SIZE: { min: -1 },
+    // VBML
+    FILE_SIZE: { max: 1048576 * 10 }, // 10 megabytes
     PARTIAL_UPLOAD_SIZE: { max: 50 * 1024 * 1024 * 1024 }, // 50GB
     URL: { min: 3, max: 2000 } // Length
   },
@@ -680,12 +681,12 @@ const MIMETYPES = {
     }
   },
   AP_VIDEO: {
+    //---------------------------------------------------------------------------------------------
+    // VBML
     MIMETYPE_EXT: {
-      'video/mp4': '.mp4',
-      'video/ogg': '.ogv',
-      'video/webm': '.webm',
-      'audio/mp4': '.mp4'
+      'application/octet-stream': '.vbml'
     }
+    //---------------------------------------------------------------------------------------------
   },
   AP_TORRENT: {
     MIMETYPE_EXT: {
@@ -841,8 +842,11 @@ const THUMBNAILS_SIZE = {
   minWidth: 150
 }
 const PREVIEWS_SIZE = {
-  width: 850,
-  height: 480,
+  //-----------------------------------------------------------------------------------------------
+  // VBML
+  width: 1920,
+  height: 1080,
+  //-----------------------------------------------------------------------------------------------
   minWidth: 400
 }
 const ACTOR_IMAGES_SIZE: { [key in ActorImageType_Type]: { width: number, height: number }[] } = {
@@ -1258,13 +1262,7 @@ export {
 
 function buildVideoMimetypeExt () {
   const data = {
-    // streamable formats that warrant cross-browser compatibility
-    'video/webm': '.webm',
-    // We'll add .ogg if additional extensions are enabled
-    // We could add .ogg here but since it could be an audio file,
-    // it would be confusing for users because PeerTube will refuse their file (based on the mimetype)
-    'video/ogg': [ '.ogv' ],
-    'video/mp4': '.mp4'
+    'application/octet-stream': '.vbml' // VBML
   }
 
   if (CONFIG.TRANSCODING.ENABLED) {
