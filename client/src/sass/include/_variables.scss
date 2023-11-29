@@ -16,8 +16,7 @@ $grey-foreground-color: #585858;
 $grey-foreground-hover-color: #303030;
 $grey-button-outline-color: color.scale($grey-foreground-color, $alpha: -95%);
 
-// VBML
-$main-color: #323232;
+$main-color: #323232; // VBML
 $main-color-lighter: color.adjust($main-color, $lightness: 10%);
 $main-color-lightest: color.adjust($main-color, $lightness: 40%);
 $main-color-very-light: #fff5eb;
