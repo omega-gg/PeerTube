@@ -16,7 +16,29 @@ function wait (ms: number) {
   })
 }
 
+//-------------------------------------------------------------------------------------------------
+// VBML
+//-------------------------------------------------------------------------------------------------
+
+function getVbmlValue(text: string, key: string)
+{
+  let indexA = text.indexOf(key + ": ");
+
+  if (indexA == -1) return "";
+
+  indexA += key.length + 2;
+
+  var indexB = text.indexOf('\n', indexA);
+
+  if (indexB == -1) return "";
+
+  return text.substring(indexA, indexB).trim();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 export {
   copyToClipboard,
-  wait
+  wait,
+  getVbmlValue
 }

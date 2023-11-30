@@ -13,6 +13,11 @@ import { logger } from '@root-helpers/logger'
 import { HttpStatusCode, VideoCreateResult } from '@peertube/peertube-models'
 import { VideoUploadService } from '../shared/video-upload.service'
 import { VideoSend } from './video-send'
+//-------------------------------------------------------------------------------------------------
+// VBML
+import { HttpClient } from '@angular/common/http'
+import { getVbmlValue } from '@root-helpers/utils'
+//-------------------------------------------------------------------------------------------------
 
 @Component({
   selector: 'my-video-upload',
@@ -70,7 +75,8 @@ export class VideoUploadComponent extends VideoSend implements OnInit, OnDestroy
     private resumableUploadService: UploadxService,
     private metaService: MetaService,
     private route: ActivatedRoute,
-    private videoUploadService: VideoUploadService
+    private videoUploadService: VideoUploadService,
+    private authHttp: HttpClient // VBML
   ) {
     super()
   }
@@ -155,7 +161,7 @@ export class VideoUploadComponent extends VideoSend implements OnInit, OnDestroy
         break
 
       case 'queue':
-        this.closeFirstStep(state.name)
+        this.closeFirstStep(state.file) // VBML
         break
 
       case 'uploading':
@@ -268,13 +274,15 @@ export class VideoUploadComponent extends VideoSend implements OnInit, OnDestroy
     return this.videofileInput.nativeElement.files[0]
   }
 
-  private uploadFile (file: File, previewfile?: File) {
+  private async uploadFile (file: File, previewfile?: File) {
+    const name = await this.buildVbmlTitle(file) // VBML
+
     const metadata = {
       waitTranscoding: true,
       channelId: this.firstStepChannelId,
       nsfw: this.serverConfig.instance.isNSFW,
       privacy: this.highestPrivacy.toString(),
-      name: this.buildVideoFilename(file.name),
+      name: name, // VBML
       filename: file.name,
       previewfile: previewfile as any
     }
@@ -305,8 +313,8 @@ export class VideoUploadComponent extends VideoSend implements OnInit, OnDestroy
     }
   }
 
-  private closeFirstStep (filename: string) {
-    const name = this.buildVideoFilename(filename)
+  private async closeFirstStep (file: File) {
+    const name = await this.buildVbmlTitle(file) // VBML
 
     this.form.patchValue({
       name,
@@ -337,5 +345,39 @@ export class VideoUploadComponent extends VideoSend implements OnInit, OnDestroy
   private refreshTokenAndRetryUpload () {
     this.authService.refreshAccessToken()
       .subscribe(() => this.retryUpload())
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  // VBML
+  //-----------------------------------------------------------------------------------------------
+
+  private readFileContent(file: File): Promise<string>
+  {
+    return new Promise<string>((res, rej) =>
+    {
+      const reader = new FileReader()
+
+      reader.onload = (e) => { res(reader.result.toString()) }
+
+      reader.readAsText(file)
+    })
+  }
+
+  private async buildVbmlTitle(file: File)
+  {
+    const data: string = await this.readFileContent(file)
+
+    let name = getVbmlValue(data, "title")
+
+    if (name == "") return this.buildVideoFilename(file.name)
+
+    const videoNameMaxSize = 110
+
+    if (name.length > videoNameMaxSize)
+    {
+      name = truncate(name, { length: videoNameMaxSize, omission: '' })
+    }
+
+    return name
   }
 }

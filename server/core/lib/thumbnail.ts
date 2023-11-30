@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { ThumbnailType, ThumbnailType_Type } from '@peertube/peertube-models'
-import { generateImageFilename, getVbmlValue } from '../helpers/image-utils.js' // VBML
+import { generateImageFilename } from '../helpers/image-utils.js'
 import { CONFIG } from '../initializers/config.js'
 import { ASSETS_PATH, PREVIEWS_SIZE, THUMBNAILS_SIZE } from '../initializers/constants.js'
 import { ThumbnailModel } from '../models/video/thumbnail.js'
@@ -14,7 +14,11 @@ import { logger, loggerTagsFactory } from '@server/helpers/logger.js'
 import { remove } from 'fs-extra'
 import { FfprobeData } from 'fluent-ffmpeg'
 import Bluebird from 'bluebird'
-import { readFileSync } from 'fs' // VBML
+//-------------------------------------------------------------------------------------------------
+// VBML
+import { getVbmlValue } from '../helpers/utils.js'
+import { readFileSync } from 'fs'
+//-------------------------------------------------------------------------------------------------
 
 const lTags = loggerTagsFactory('thumbnail')
 

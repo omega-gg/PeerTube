@@ -399,8 +399,7 @@ const CONSTRAINTS_FIELDS = {
     VIEWS: { min: 0 },
     LIKES: { min: 0 },
     DISLIKES: { min: 0 },
-    // VBML
-    FILE_SIZE: { max: 1048576 * 10 }, // 10 megabytes
+    FILE_SIZE: { max: 1048576 * 1 }, // VBML 1 megabytes
     PARTIAL_UPLOAD_SIZE: { max: 50 * 1024 * 1024 * 1024 }, // 50GB
     URL: { min: 3, max: 2000 } // Length
   },
