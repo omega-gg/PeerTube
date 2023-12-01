@@ -9,7 +9,6 @@
   - bash: |
       sh configure.sh
       sh build.sh
-      cd deploy
       zip -rq PeerTube.zip *
   - publish: $(System.DefaultWorkingDirectory)/PeerTube.zip
     artifact: PeerTube-linux64
