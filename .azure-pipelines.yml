@@ -1,0 +1,15 @@
+#--------------------------------------------------------------------------------------------------
+# Linux
+#--------------------------------------------------------------------------------------------------
+
+- job: linux64
+  pool:
+    vmImage: "ubuntu-latest"
+  steps:
+  - bash: |
+      sh configure.sh
+      sh build.sh
+      cd deploy
+      zip -rq PeerTube.zip *
+  - publish: $(System.DefaultWorkingDirectory)/PeerTube.zip
+    artifact: PeerTube-linux64
