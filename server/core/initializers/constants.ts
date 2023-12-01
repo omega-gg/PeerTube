@@ -1259,12 +1259,16 @@ export {
 
 // ---------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------------------------------
+// VBML
+//-------------------------------------------------------------------------------------------------
+
 function buildVideoMimetypeExt () {
   const data = {
-    'application/octet-stream': '.vbml' // VBML
+    'application/octet-stream': '.vbml'
   }
 
-  if (CONFIG.TRANSCODING.ENABLED) {
+  /*if (CONFIG.TRANSCODING.ENABLED) {
     if (CONFIG.TRANSCODING.ALLOW_ADDITIONAL_EXTENSIONS) {
       data['video/ogg'].push('.ogg')
 
@@ -1315,10 +1319,12 @@ function buildVideoMimetypeExt () {
     if (CONFIG.TRANSCODING.ALLOW_AUDIO_FILES) {
       Object.assign(data, MIMETYPES.AUDIO.MIMETYPE_EXT)
     }
-  }
+  }*/
 
   return data
 }
+
+//-------------------------------------------------------------------------------------------------
 
 function updateWebserverUrls () {
   WEBSERVER.URL = sanitizeUrl(CONFIG.WEBSERVER.SCHEME + '://' + CONFIG.WEBSERVER.HOSTNAME + ':' + CONFIG.WEBSERVER.PORT)

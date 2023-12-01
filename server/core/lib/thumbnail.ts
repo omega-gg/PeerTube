@@ -129,8 +129,7 @@ function generateLocalVideoMiniature (options: {
 
     let biggestImagePath: string
     return Bluebird.mapSeries(metadatas, metadata => {
-      const { filename, basePath, height, width, existingThumbnail, outputPath, type,
-              cover } = metadata
+      const { filename, basePath, height, width, existingThumbnail, outputPath, type } = metadata
 
       if (videoFile.isAudio())
       {

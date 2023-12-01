@@ -168,7 +168,8 @@ async function getVideoStreamBitrate (path: string, existingProbe?: FfprobeData)
 }
 
 async function getVideoStreamDuration (path: string, existingProbe?: FfprobeData) {
-  return 0; // VBML
+  // NOTE VBML: 42 looks better than 0.
+  return 42; // VBML
 }
 
 async function getVideoStream (path: string, existingProbe?: FfprobeData) {
