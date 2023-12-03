@@ -13,24 +13,32 @@ getSource()
 
     rm artifacts.json
 
-    echo $artifacts | $grep -Po '"id":.*?[^\\]}}'         | \
-                      $grep "$2\""                        | \
-                      $grep -Po '"downloadUrl":.*?[^\\]"' | \
-                      $grep -o '"[^"]*"$'                 | tr -d '"'
+    echo $artifacts | grep -Po '"id":.*?[^\\]}}'         | \
+                      grep "$2\""                        | \
+                      grep -Po '"downloadUrl":.*?[^\\]"' | \
+                      grep -o '"[^"]*"$'                 | tr -d '"'
 }
 
 #--------------------------------------------------------------------------------------------------
 # Syntax
 #--------------------------------------------------------------------------------------------------
 
-if [ $# != 4 ]; then
+if [ $# != 3 ]; then
 
-    echo "Usage: production <domain> <artifact> <default.yaml> <production.yaml>"
+    echo "Usage: production <domain> <artifact> <production.yaml>"
 fi
+
+#--------------------------------------------------------------------------------------------------
+# Configure
+#--------------------------------------------------------------------------------------------------
+
+sudo sh configure.sh
 
 #--------------------------------------------------------------------------------------------------
 # User
 #--------------------------------------------------------------------------------------------------
+
+echo "CREATE USER"
 
 sudo useradd -m -d /var/www/peertube -s /bin/bash -p peertube peertube
 
@@ -38,11 +46,15 @@ sudo passwd peertube
 
 echo "PeerTube: Ensure the peertube root directory is traversable by nginx."
 
+sudo chmod 755 /var/www/peertube
+
 ls -ld /var/www/peertube # Should be drwxr-xr-x
 
 #--------------------------------------------------------------------------------------------------
 # Database
 #--------------------------------------------------------------------------------------------------
+
+echo "CREATE DATABASE"
 
 cd /var/www/peertube
 
@@ -51,12 +63,14 @@ sudo -u postgres createuser -P peertube
 sudo -u postgres createdb -O peertube -E UTF8 -T template0 peertube_prod
 
 # NOTE PeerTube: This is required for extensions
-sudo -u postgres psql -c "CREATE EXTENSION pg_trgm;" peertube_prod
+sudo -u postgres psql -c "CREATE EXTENSION pg_trgm;"  peertube_prod
 sudo -u postgres psql -c "CREATE EXTENSION unaccent;" peertube_prod
 
 #--------------------------------------------------------------------------------------------------
 # Prepare
 #--------------------------------------------------------------------------------------------------
+
+echo "PREPARE"
 
 sudo -u peertube mkdir config storage versions
 
@@ -110,8 +124,9 @@ echo "CONFIGURATION"
 
 cd /var/www/peertube
 
-sudo -u peertube cp "$3" config/default.yaml
-sudo -u peertube cp "$4" config/production.yaml
+sudo -u peertube cp peertube-latest/config/default.yaml config/default.yaml
+
+sudo -u peertube cp "$3" config/production.yaml
 
 #--------------------------------------------------------------------------------------------------
 # Webserver
