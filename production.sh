@@ -38,6 +38,7 @@ sudo sh configure.sh
 # User
 #--------------------------------------------------------------------------------------------------
 
+echo ""
 echo "CREATE USER"
 
 sudo useradd -m -d /var/www/peertube -s /bin/bash -p peertube peertube
@@ -48,12 +49,13 @@ echo "PeerTube: Ensure the peertube root directory is traversable by nginx."
 
 sudo chmod 755 /var/www/peertube
 
-ls -ld /var/www/peertube # Should be drwxr-xr-x
+ls -ld /var/www/peertube # NOTE: Should be drwxr-xr-x
 
 #--------------------------------------------------------------------------------------------------
 # Database
 #--------------------------------------------------------------------------------------------------
 
+echo ""
 echo "CREATE DATABASE"
 
 cd /var/www/peertube
@@ -70,6 +72,7 @@ sudo -u postgres psql -c "CREATE EXTENSION unaccent;" peertube_prod
 # Prepare
 #--------------------------------------------------------------------------------------------------
 
+echo ""
 echo "PREPARE"
 
 sudo -u peertube mkdir config storage versions
@@ -86,28 +89,33 @@ PeerTube_url="https://dev.azure.com/bunjee/PeerTube/_apis/build/builds/$2/artifa
 
 name="PeerTube-linux64"
 
+echo ""
 echo "ARTIFACT $name"
 echo $PeerTube_url
 
 PeerTube_url=$(getSource $PeerTube_url $name)
 
-curl --retry 3 -L -o PeerTube.zip $PeerTube_url
+sudo -u peertube curl --retry 3 -L -o PeerTube.zip $PeerTube_url
 
 echo ""
 echo "EXTRACTING $name"
 
-unzip -q PeerTube.zip
+sudo -u peertube unzip -q PeerTube.zip
 
 rm PeerTube.zip
 
-unzip -qo $name/PeerTube.zip
+sudo -u peertube unzip -qo $name/PeerTube.zip
 
 rm -rf $name
+
+echo ""
+ls -la # NOTE: Should be owned by peertube.
 
 #--------------------------------------------------------------------------------------------------
 # Install
 #--------------------------------------------------------------------------------------------------
 
+echo ""
 echo "INSTALL"
 
 cd /var/www/peertube
@@ -120,23 +128,26 @@ cd ./peertube-latest && sudo -H -u peertube yarn install --production --pure-loc
 # Configuration
 #--------------------------------------------------------------------------------------------------
 
+echo ""
 echo "CONFIGURATION"
 
 cd /var/www/peertube
 
 sudo -u peertube cp peertube-latest/config/default.yaml config/default.yaml
 
-sudo -u peertube cp "$3" config/production.yaml
+# NOTE: We might not be able to copy this file as the peertube user.
+sudo cp "$3" config/production.yaml
 
 #--------------------------------------------------------------------------------------------------
 # Webserver
 #--------------------------------------------------------------------------------------------------
 
+echo ""
 echo "WEBSERVER"
 
 sudo cp /var/www/peertube/peertube-latest/support/nginx/peertube /etc/nginx/sites-available/peertube
 
-sudo sed -i 's/${WEBSERVER_HOST}/$1/g' /etc/nginx/sites-available/peertube
+sudo sed -i 's/${WEBSERVER_HOST}/'"$1"'/g' /etc/nginx/sites-available/peertube
 
 sudo sed -i 's/${PEERTUBE_HOST}/127.0.0.1:9000/g' /etc/nginx/sites-available/peertube
 
@@ -146,6 +157,7 @@ sudo ln -s /etc/nginx/sites-available/peertube /etc/nginx/sites-enabled/peertube
 # Certificate
 #--------------------------------------------------------------------------------------------------
 
+echo ""
 echo "CERTIFICATE"
 
 sudo systemctl stop nginx
@@ -158,6 +170,7 @@ sudo systemctl reload nginx
 # Linux tuning
 #--------------------------------------------------------------------------------------------------
 
+echo ""
 echo "TUNING"
 
 sudo cp /var/www/peertube/peertube-latest/support/sysctl.d/30-peertube-tcp.conf /etc/sysctl.d/
@@ -168,6 +181,7 @@ sudo sysctl -p /etc/sysctl.d/30-peertube-tcp.conf
 # systemd
 #--------------------------------------------------------------------------------------------------
 
+echo ""
 echo "SYSTEMD"
 
 sudo cp /var/www/peertube/peertube-latest/support/systemd/peertube.service /etc/systemd/system/
@@ -182,6 +196,7 @@ sudo systemctl enable peertube
 # Run
 #--------------------------------------------------------------------------------------------------
 
+echo ""
 echo "RUN"
 
 sudo systemctl start peertube
