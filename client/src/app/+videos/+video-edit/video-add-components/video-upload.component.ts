@@ -16,7 +16,7 @@ import { VideoSend } from './video-send'
 //-------------------------------------------------------------------------------------------------
 // VBML
 import { HttpClient } from '@angular/common/http'
-import { getVbmlValue } from '@root-helpers/utils'
+import { readFileContent, getVbmlValue } from '@root-helpers/utils'
 //-------------------------------------------------------------------------------------------------
 
 @Component({
@@ -351,21 +351,9 @@ export class VideoUploadComponent extends VideoSend implements OnInit, OnDestroy
   // VBML
   //-----------------------------------------------------------------------------------------------
 
-  private readFileContent(file: File): Promise<string>
-  {
-    return new Promise<string>((res, rej) =>
-    {
-      const reader = new FileReader()
-
-      reader.onload = (e) => { res(reader.result.toString()) }
-
-      reader.readAsText(file)
-    })
-  }
-
   private async buildVbmlTitle(file: File)
   {
-    const data: string = await this.readFileContent(file)
+    const data: string = await readFileContent(file)
 
     let name = getVbmlValue(data, "title")
 

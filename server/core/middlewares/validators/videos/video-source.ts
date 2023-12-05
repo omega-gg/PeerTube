@@ -11,6 +11,7 @@ import { Metadata as UploadXMetadata } from '@uploadx/core'
 import { logger } from '../../../helpers/logger.js'
 import { areValidationErrors, checkUserCanManageVideo, doesVideoExist, isValidVideoIdParam } from '../shared/index.js'
 import { addDurationToVideoFileIfNeeded, checkVideoFileCanBeEdited, commonVideoFileChecks, isVideoFileAccepted } from './shared/index.js'
+import { checkVbmlType } from '../../../helpers/utils.js' // VBML
 
 export const videoSourceGetLatestValidator = [
   isValidVideoIdParam('id'),
@@ -42,6 +43,11 @@ export const replaceVideoSourceResumableValidator = [
     const body: express.CustomUploadXFile<UploadXMetadata> = req.body
     const file = { ...body, duration: undefined, path: getResumableUploadPath(body.name), filename: body.metadata.filename }
     const cleanup = () => uploadx.storage.delete(file).catch(err => logger.error('Cannot delete the file %s', file.name, { err }))
+
+    // VBML
+    if (checkVbmlType(file.path, res) == false) {
+      return cleanup()
+    }
 
     if (!await checkCanUpdateVideoFile({ req, res })) {
       return cleanup()

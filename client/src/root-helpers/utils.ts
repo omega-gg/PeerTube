@@ -20,6 +20,18 @@ function wait (ms: number) {
 // VBML
 //-------------------------------------------------------------------------------------------------
 
+function readFileContent(file: File): Promise<string>
+{
+  return new Promise<string>((res, rej) =>
+  {
+    const reader = new FileReader()
+
+    reader.onload = (e) => { res(reader.result.toString()) }
+
+    reader.readAsText(file)
+  })
+}
+
 function getVbmlValue(text: string, key: string)
 {
   let indexA = text.indexOf(key + ": ");
@@ -40,5 +52,9 @@ function getVbmlValue(text: string, key: string)
 export {
   copyToClipboard,
   wait,
+  //-----------------------------------------------------------------------------------------------
+  // VBML
+  //-----------------------------------------------------------------------------------------------
+  readFileContent,
   getVbmlValue
 }

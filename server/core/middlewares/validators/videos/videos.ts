@@ -53,6 +53,7 @@ import {
   isValidVideoPasswordHeader
 } from '../shared/index.js'
 import { addDurationToVideoFileIfNeeded, commonVideoFileChecks, isVideoFileAccepted } from './shared/index.js'
+import { checkVbmlType } from '../../../helpers/utils.js' // VBML
 
 const videosAddLegacyValidator = getCommonVideoEditAttributes().concat([
   body('videofile')
@@ -127,6 +128,11 @@ const videosAddResumableValidator = [
     }
 
     await Redis.Instance.setUploadSession(uploadId)
+
+    // VBML
+    if (checkVbmlType(file.path, res) == false) {
+      return cleanup()
+    }
 
     if (!await doesVideoChannelOfAccountExist(file.metadata.channelId, user, res)) return cleanup()
     if (!await addDurationToVideoFileIfNeeded({ videoFile: file, res, middlewareName: 'videosAddResumableValidator' })) return cleanup()

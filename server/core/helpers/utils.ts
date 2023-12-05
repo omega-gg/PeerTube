@@ -6,6 +6,12 @@ import { ResultList } from '@peertube/peertube-models'
 import { CONFIG } from '../initializers/config.js'
 import { randomBytesPromise } from './core-utils.js'
 import { logger } from './logger.js'
+//-------------------------------------------------------------------------------------------------
+// VBML
+import express from 'express'
+import { readFileSync } from 'fs'
+import { HttpStatusCode } from '@peertube/peertube-models'
+//-------------------------------------------------------------------------------------------------
 
 function deleteFileAndCatch (path: string) {
   remove(path)
@@ -62,6 +68,23 @@ function getUUIDFromFilename (filename: string) {
 // VBML
 //-------------------------------------------------------------------------------------------------
 
+function checkVbmlType(path: string, res: express.Response )
+{
+  let type = getVbmlValue(readFileSync(path).toString('utf-8'), "type")
+
+  if (type != "track" && type != "hub" && type != "channel")
+  {
+    res.fail(
+    {
+      status: HttpStatusCode.FORBIDDEN_403,
+      message: 'Invalid VBML: type should be track, hub or channel'
+    })
+
+    return false
+  }
+  else return true;
+}
+
 function getVbmlValue(text: string, key: string)
 {
   let indexA = text.indexOf(key + ": ");
@@ -88,5 +111,8 @@ export {
   getSecureTorrentName,
   generateVideoImportTmpPath,
   getUUIDFromFilename,
-  getVbmlValue // VBML
+  //-----------------------------------------------------------------------------------------------
+  // VBML
+  checkVbmlType,
+  getVbmlValue
 }
