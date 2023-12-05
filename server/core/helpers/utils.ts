@@ -77,7 +77,7 @@ function checkVbmlType(path: string, res: express.Response )
     res.fail(
     {
       status: HttpStatusCode.FORBIDDEN_403,
-      message: 'Invalid VBML: type should be track, hub or channel'
+      message: 'VBML type should be track, hub or channel'
     })
 
     return false
