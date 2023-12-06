@@ -11,7 +11,6 @@ node_version="18"
 # Node certificate
 #--------------------------------------------------------------------------------------------------
 
-echo ""
 echo "INSTALL NODE CERTIFICATE"
 
 sudo apt-get install -y ca-certificates curl gnupg

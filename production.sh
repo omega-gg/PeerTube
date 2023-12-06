@@ -26,6 +26,8 @@ getSource()
 if [ $# != 4 ]; then
 
     echo "Usage: production <version> <artifact> <production.yaml> <domain>"
+
+    exit 1
 fi
 
 #--------------------------------------------------------------------------------------------------

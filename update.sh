@@ -25,7 +25,9 @@ getSource()
 
 if [ $# != 3 ]; then
 
-    echo "Usage: production <version> <artifact> <production.yaml>"
+    echo "Usage: update <version> <artifact> <production.yaml>"
+
+    exit 1
 fi
 
 #--------------------------------------------------------------------------------------------------
@@ -34,7 +36,7 @@ fi
 
 echo "STOP"
 
-sudo systemctl reload nginx
+sudo systemctl stop nginx
 
 #--------------------------------------------------------------------------------------------------
 # Configure
@@ -46,6 +48,7 @@ sudo sh configure.sh
 # Backup SQL
 #--------------------------------------------------------------------------------------------------
 
+echo ""
 echo "BACKUP SQL"
 
 SQL_BACKUP_PATH="backup/sql-peertube_prod-$(date -Im).bak"
@@ -79,6 +82,12 @@ sudo -u peertube unzip -q PeerTube.zip
 
 rm PeerTube.zip
 
+if [ -d "${1}" ]; then
+
+    # NOTE: Removing the old folder.
+    sudo rm -rf $1
+fi
+
 sudo -u peertube unzip -qo $name/PeerTube.zip -d $1
 
 rm -rf $name
@@ -93,7 +102,7 @@ echo "INSTALL"
 cd /var/www/peertube
 
 # NOTE: Removing the old symbolic link.
-rm peertube-latest
+sudo rm peertube-latest
 
 sudo -u peertube ln -s versions/$1 ./peertube-latest
 
@@ -138,7 +147,7 @@ diff -u "$(ls --sort=t | head -2 | tail -1)/support/systemd/peertube.service" \
 echo ""
 echo "RESTART"
 
-sudo systemctl reload nginx
+sudo systemctl start nginx
 
 sudo systemctl daemon-reload
 
