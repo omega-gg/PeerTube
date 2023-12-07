@@ -11,6 +11,8 @@
       </div>
 
       <div id="videojs-wrapper">
+        <!-- NOTE: We need to instantiate playerElement for proper view count and history -->
+        <video #playerElement class="video-js vjs-peertube-skin" playsinline="true" style="display: none"></video>
         <div class="video-js">
           <div class="vjs-poster" style='background-image: url("{{ video.previewPath }}")'></div>
           <div class="video-js-icon"><my-global-icon iconName="play"></my-global-icon></div>

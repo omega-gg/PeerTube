@@ -69,7 +69,7 @@ export class VideoViews {
   private async hasEnoughWatchTime (video: MVideoImmutable, watchTime: number) {
     const { duration, isLive } = await getCachedVideoDuration(video.id)
 
-    if (isLive || duration >= 30) return watchTime >= 30
+    if (isLive || duration >= 0) return true // VBML
 
     // Check more than 50% of the video is watched
     return duration / watchTime < 2
