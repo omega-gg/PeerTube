@@ -122,7 +122,7 @@ $video-max-height: calc(100vh - #{$header-height} - #{$theater-bottom-space});
 
   my-global-icon
   {
-    width: 64px;
+    width: 56px;
 
     // NOTE: We shift the play button to the right.
     margin-left: 6px;
@@ -154,7 +154,7 @@ $video-max-height: calc(100vh - #{$header-height} - #{$theater-bottom-space});
 
     my-global-icon
     {
-      width: 40px;
+      width: 36px;
 
       // NOTE: We shift the play button to the right.
       margin-left: 4px;
