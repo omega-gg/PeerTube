@@ -99,8 +99,11 @@
     @include margin-right(0.5rem);
 
     display: inline-block;
-    width: 23px;
-    height: 24px;
+
+    //---------------------------------------------------------------------------------------------
+    // VBML
+    width: 75px;
+    height: 20px;
   }
 }
 
