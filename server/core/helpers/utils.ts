@@ -72,7 +72,7 @@ function checkVbmlType(path: string, res: express.Response )
 {
   let type = getVbmlValue(readFileSync(path).toString('utf-8'), "type")
 
-  if (type != "track" && type != "hub" && type != "channel")
+  if (type != "track" && type != "hub" && type != "channel" && type != "interactive")
   {
     res.fail(
     {
