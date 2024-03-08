@@ -133,7 +133,8 @@ function doJSONRequest <T> (url: string, options: PeerTubeRequestOptions = {}) {
 async function doRequestAndSaveToFile (
   url: string,
   destPath: string,
-  options: PeerTubeRequestOptions = {}
+  // VBML: We specify 2 megabytes here otherwise the upload fails when the cover is too large.
+  options: PeerTubeRequestOptions = { bodyKBLimit: 2000 }
 ) {
   const gotOptions = buildGotOptions({ ...options, timeout: options.timeout ?? REQUEST_TIMEOUTS.FILE })
 
