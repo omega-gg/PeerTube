@@ -125,13 +125,11 @@ function generateLocalVideoMiniature (options: {
 
     let cover = getVbmlValue(readFileSync(input).toString('utf-8'), "cover");
 
-    if (cover == "") cover = ASSETS_PATH.DEFAULT_AUDIO_BACKGROUND;
-
     let biggestImagePath: string
     return Bluebird.mapSeries(metadatas, metadata => {
       const { filename, basePath, height, width, existingThumbnail, outputPath, type } = metadata
 
-      if (videoFile.isAudio())
+      if (cover && videoFile.isAudio())
       {
         return updateLocalVideoMiniatureFromUrl({downloadUrl: cover, video, type});
       }
